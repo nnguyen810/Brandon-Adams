@@ -1,35 +1,67 @@
-# Brandon Adam's Security Services - FastAPI Setup
+# Brandon Adam's Security Services
 
-## 1) Install dependencies
+This repo now supports static hosting on GitHub Pages.
+
+## GitHub Pages deployment
+
+1. Push this repository to GitHub.
+2. Ensure your default branch is `main`.
+3. In GitHub, open **Settings -> Pages**.
+4. Under **Build and deployment**, choose **Source: GitHub Actions**.
+5. Push any new commit to `main` and the workflow will deploy automatically.
+
+Your site URL will be:
+
+- `https://<your-username>.github.io/<repo-name>/`
+
+## Contact form email on GitHub Pages
+
+GitHub Pages only hosts static files. It cannot run `main.py` or `/api/contact` by itself.
+
+This project now supports two contact form modes via [static/site-config.js](static/site-config.js):
+
+- `window.CONTACT_FORM_ENDPOINT` for static email sending (recommended for GitHub Pages)
+- `window.CONTACT_API_URL` for your own hosted backend API
+
+### Quick setup (no backend) with FormSubmit
+
+1. Open [static/site-config.js](static/site-config.js).
+2. Set:
+
+```js
+window.CONTACT_FORM_ENDPOINT = "https://formsubmit.co/YOUR_EMAIL@example.com";
+```
+
+3. Leave `window.CONTACT_API_URL = "";`
+4. Commit and push.
+5. Submit the contact form once and confirm your email address in FormSubmit's verification email.
+
+After verification, submissions from your GitHub Pages site will be delivered to your inbox.
+
+### Using your own API instead
+
+Set:
+
+```js
+window.CONTACT_API_URL = "https://your-api-domain/api/contact";
+```
+
+If both are set, the form uses `CONTACT_API_URL` first.
+
+## Optional local API (FastAPI)
+
+If you still want to run the backend locally or on another host:
+
+1. Install dependencies:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-## 2) Configure email settings
+2. Copy `.env.example` to `.env` and set SMTP values.
 
-Copy `.env.example` to `.env` and fill in your SMTP values.
-
-Required values:
-
-- `SMTP_HOST`
-- `SMTP_PORT`
-- `SMTP_USERNAME`
-- `SMTP_PASSWORD`
-- `SMTP_FROM_EMAIL`
-- `SMTP_TO_EMAIL`
-- `SMTP_USE_TLS`
-
-## 3) Run the server
+3. Run:
 
 ```bash
 uvicorn main:app --reload
 ```
-
-Open `http://127.0.0.1:8000`.
-
-## Endpoints
-
-- `GET /` serves the splash page
-- `POST /api/contact` sends contact form email
-- `GET /health` basic health check
